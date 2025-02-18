@@ -1,5 +1,5 @@
 import pytest
-from swarm import Swarm, Agent
+from swarm import AsyncSwarm, Agent
 from tests.mock_client import MockOpenAIClient, create_mock_response
 from unittest.mock import Mock
 import json
@@ -16,25 +16,27 @@ def mock_openai_client():
     return m
 
 
-def test_run_with_simple_message(mock_openai_client: MockOpenAIClient):
+@pytest.mark.asyncio
+async def test_run_with_simple_message(mock_openai_client: MockOpenAIClient):
     agent = Agent()
     # set up client and run
-    client = Swarm(client=mock_openai_client)
+    client = AsyncSwarm(client=mock_openai_client)
     messages = [{"role": "user", "content": "Hello, how are you?"}]
-    response = client.run(agent=agent, messages=messages)
+    response = await client.run(agent=agent, messages=messages)
 
     # assert response content
     assert response.messages[-1]["role"] == "assistant"
     assert response.messages[-1]["content"] == DEFAULT_RESPONSE_CONTENT
 
 
-def test_tool_call(mock_openai_client: MockOpenAIClient):
+@pytest.mark.asyncio
+async def test_tool_call(mock_openai_client: MockOpenAIClient):
     expected_location = "San Francisco"
 
     # set up mock to record function calls
     get_weather_mock = Mock()
 
-    def get_weather(location):
+    async def get_weather(location):
         get_weather_mock(location=location)
         return "It's sunny today."
 
@@ -59,15 +61,16 @@ def test_tool_call(mock_openai_client: MockOpenAIClient):
     )
 
     # set up client and run
-    client = Swarm(client=mock_openai_client)
-    response = client.run(agent=agent, messages=messages)
+    client = AsyncSwarm(client=mock_openai_client)
+    response = await client.run(agent=agent, messages=messages)
 
     get_weather_mock.assert_called_once_with(location=expected_location)
     assert response.messages[-1]["role"] == "assistant"
     assert response.messages[-1]["content"] == DEFAULT_RESPONSE_CONTENT
 
 
-def test_execute_tools_false(mock_openai_client: MockOpenAIClient):
+@pytest.mark.asyncio
+async def test_execute_tools_false(mock_openai_client: MockOpenAIClient):
     expected_location = "San Francisco"
 
     # set up mock to record function calls
@@ -98,8 +101,8 @@ def test_execute_tools_false(mock_openai_client: MockOpenAIClient):
     )
 
     # set up client and run
-    client = Swarm(client=mock_openai_client)
-    response = client.run(agent=agent, messages=messages, execute_tools=False)
+    client = AsyncSwarm(client=mock_openai_client)
+    response = await client.run(agent=agent, messages=messages, execute_tools=False)
     print(response)
 
     # assert function not called
@@ -115,8 +118,9 @@ def test_execute_tools_false(mock_openai_client: MockOpenAIClient):
     }
 
 
-def test_handoff(mock_openai_client: MockOpenAIClient):
-    def transfer_to_agent2():
+@pytest.mark.asyncio
+async def test_handoff(mock_openai_client: MockOpenAIClient):
+    async def transfer_to_agent2():
         return agent2
 
     agent1 = Agent(name="Test Agent 1", functions=[transfer_to_agent2])
@@ -136,9 +140,9 @@ def test_handoff(mock_openai_client: MockOpenAIClient):
     )
 
     # set up client and run
-    client = Swarm(client=mock_openai_client)
+    client = AsyncSwarm(client=mock_openai_client)
     messages = [{"role": "user", "content": "I want to talk to agent 2"}]
-    response = client.run(agent=agent1, messages=messages)
+    response = await client.run(agent=agent1, messages=messages)
 
     assert response.agent == agent2
     assert response.messages[-1]["role"] == "assistant"

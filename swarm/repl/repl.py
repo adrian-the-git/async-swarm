@@ -1,6 +1,6 @@
 import json
 
-from swarm import Swarm
+from swarm import AsyncSwarm
 
 
 def process_and_print_streaming_response(response):
@@ -57,10 +57,10 @@ def pretty_print_messages(messages) -> None:
             print(f"\033[95m{name}\033[0m({arg_str[1:-1]})")
 
 
-def run_demo_loop(
+async def run_demo_loop(
     starting_agent, context_variables=None, stream=False, debug=False
 ) -> None:
-    client = Swarm()
+    client = AsyncSwarm()
     print("Starting Swarm CLI 🐝")
 
     messages = []
@@ -70,7 +70,7 @@ def run_demo_loop(
         user_input = input("\033[90mUser\033[0m: ")
         messages.append({"role": "user", "content": user_input})
 
-        response = client.run(
+        response = await client.run(
             agent=agent,
             messages=messages,
             context_variables=context_variables or {},

@@ -1,11 +1,10 @@
 from unittest.mock import MagicMock
 from swarm.types import ChatCompletionMessage, ChatCompletionMessageToolCall, Function
-from openai import OpenAI
 from openai.types.chat.chat_completion import ChatCompletion, Choice
 import json
 
 
-def create_mock_response(message, function_calls=[], model="gpt-4o"):
+async def create_mock_response(message, function_calls=[], model="gpt-4o"):
     role = message.get("role", "assistant")
     content = message.get("content", "")
     tool_calls = (
@@ -64,33 +63,33 @@ class MockOpenAIClient:
         self.chat.completions.create.assert_called_with(**kwargs)
 
 
-# Initialize the mock client
-client = MockOpenAIClient()
-
-# Set a sequence of mock responses
-client.set_sequential_responses(
-    [
-        create_mock_response(
-            {"role": "assistant", "content": "First response"},
-            [
-                {
-                    "name": "process_refund",
-                    "args": {"item_id": "item_123", "reason": "too expensive"},
-                }
-            ],
-        ),
-        create_mock_response({"role": "assistant", "content": "Second"}),
-    ]
-)
-
-# This should return the first mock response
-first_response = client.chat.completions.create()
-print(
-    first_response.choices[0].message
-)  # Outputs: role='agent' content='First response'
-
-# This should return the second mock response
-second_response = client.chat.completions.create()
-print(
-    second_response.choices[0].message
-)  # Outputs: role='agent' content='Second response'
+## Initialize the mock client
+# client = MockOpenAIClient()
+#
+## Set a sequence of mock responses
+# client.set_sequential_responses(
+#    [
+#        create_mock_response(
+#            {"role": "assistant", "content": "First response"},
+#            [
+#                {
+#                    "name": "process_refund",
+#                    "args": {"item_id": "item_123", "reason": "too expensive"},
+#                }
+#            ],
+#        ),
+#        create_mock_response({"role": "assistant", "content": "Second"}),
+#    ]
+# )
+#
+## This should return the first mock response
+# first_response = await client.chat.completions.create()
+# print(
+#    first_response.choices[0].message
+# )  # Outputs: role='agent' content='First response'
+#
+## This should return the second mock response
+# second_response = await client.chat.completions.create()
+# print(
+#    second_response.choices[0].message
+# )  # Outputs: role='agent' content='Second response'
