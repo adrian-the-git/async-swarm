@@ -2,7 +2,7 @@
 
 # AsyncSwarm (experimental, educational)
 
-An educational framework exploring ergonomic, lightweight multi-agent orchestration.
+An educational framework exploring ergonomic, lightweight multi-agent orchestration, hacked to use the `AsyncOpenAI` client.
 
 > [!WARNING]
 > Swarm is currently an experimental sample framework intended to explore ergonomic interfaces for multi-agent systems. It is not intended to be used in production, and therefore has no official support. (This also means we will not be reviewing PRs or issues!)
@@ -26,11 +26,12 @@ pip install git+https://github.com/openai/swarm.git
 ## Usage
 
 ```python
-from swarm import Swarm, Agent
+import asyncio
+from swarm import AsyncSwarm, Agent
 
-client = Swarm()
+client = AsyncSwarm()
 
-def transfer_to_agent_b():
+async def transfer_to_agent_b():
     return agent_b
 
 
@@ -45,12 +46,16 @@ agent_b = Agent(
     instructions="Only speak in Haikus.",
 )
 
-response = client.run(
-    agent=agent_a,
-    messages=[{"role": "user", "content": "I want to talk to agent B."}],
-)
 
-print(response.messages[-1]["content"])
+async def main()
+    response = await client.run(
+        agent=agent_a,
+        messages=[{"role": "user", "content": "I want to talk to agent B."}],
+    )
+
+    print(response.messages[-1]["content"])
+
+asyncio.run(main())
 ```
 
 ```
@@ -58,6 +63,8 @@ Hope glimmers brightly,
 New paths converge gracefully,
 What can I assist?
 ```
+
+### ⚠️ Documentation which follows has not been updated to reflect AsyncSwarm
 
 ## Table of Contents
 
