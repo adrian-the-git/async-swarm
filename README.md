@@ -47,7 +47,7 @@ agent_b = Agent(
 )
 
 
-async def main()
+async def main():
     response = await client.run(
         agent=agent_a,
         messages=[{"role": "user", "content": "I want to talk to agent B."}],
