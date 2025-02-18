@@ -1,5 +1,5 @@
 import pytest
-from swarm import AsyncSwarm, Agent
+from async_swarm import AsyncSwarm, Agent
 from tests.mock_client import MockOpenAIClient, create_mock_response
 from unittest.mock import Mock
 import json
