@@ -14,13 +14,13 @@ An educational framework exploring ergonomic, lightweight multi-agent orchestrat
 Requires Python 3.10+
 
 ```shell
-pip install git+ssh://git@github.com/openai/swarm.git
+pip install git+ssh://git@github.com/adrian-the-git/async-swarm.git
 ```
 
 or
 
 ```shell
-pip install git+https://github.com/openai/swarm.git
+pip install git+https://github.com/adrian-the-git/async-swarm.git
 ```
 
 ## Usage
@@ -64,7 +64,8 @@ New paths converge gracefully,
 What can I assist?
 ```
 
-### ⚠️ Documentation which follows has not been updated to reflect AsyncSwarm
+### ⚠️ Documentation and code examples which follow have not been updated for AsyncSwarm
+
 
 ## Table of Contents
 
