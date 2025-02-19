@@ -1,4 +1,5 @@
 # Standard library imports
+import asyncio
 import copy
 import json
 from collections import defaultdict
@@ -40,9 +41,13 @@ class AsyncSwarm:
     ) -> ChatCompletionMessage:
         context_variables = defaultdict(str, context_variables)
         instructions = (
-            agent.instructions(context_variables)
-            if callable(agent.instructions)
-            else agent.instructions
+            await agent.instructions(context_variables)
+            if asyncio.iscoroutinefunction(agent.instructions)
+            else (
+                agent.instructions(context_variables)
+                if callable(agent.instructions)
+                else agent.instructions
+            )
         )
         messages = [{"role": "system", "content": instructions}] + history
         debug_print(debug, "Getting chat completion for...:", messages)
